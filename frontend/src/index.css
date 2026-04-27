@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+  --color-card: #18181b;
+  --color-card-foreground: #fafafa;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #fff;
+  --color-muted: #27272a;
+  --color-muted-foreground: #a1a1aa;
+  --color-accent: #27272a;
+  --color-destructive: #ef4444;
+  --color-green: #22c55e;
+  --color-red: #ef4444;
+  --radius: 0.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #09090b;
+  color: #fafafa;
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+/* ─── Light theme ─── */
+[data-theme="light"] {
+  --color-zinc-950: #ffffff;
+  --color-zinc-900: #f4f4f5;
+  --color-zinc-800: #e4e4e7;
+  --color-zinc-700: #d4d4d8;
+  --color-zinc-600: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-400: #52525b;
+  --color-zinc-300: #3f3f46;
+  --color-zinc-200: #27272a;
+  --color-zinc-100: #18181b;
+  --color-zinc-50: #09090b;
+}
+
+[data-theme="light"] body {
+  background-color: #ffffff;
+  color: #18181b;
+}
+
+/* Recharts на светла тема */
+[data-theme="light"] .recharts-cartesian-grid-horizontal line,
+[data-theme="light"] .recharts-cartesian-grid-vertical line {
+  stroke: #d4d4d8;
+}
+[data-theme="light"] .recharts-text {
+  fill: #52525b;
+}

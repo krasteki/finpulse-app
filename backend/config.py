@@ -4,8 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    # Database
-    database_url: str = "postgresql+asyncpg://finpulse_user:finpulse_secret@localhost:5432/finpulse"
+    # Database (set via DATABASE_URL env var or .env file)
+    database_url: str = "postgresql+asyncpg://finpulse_user:changeme@localhost:5432/finpulse"
 
     # API Keys
     fmp_api_key: str = ""

@@ -17,7 +17,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: frontend
-          image: ghcr.io/krasteki/finpulse-frontend:5c109179effe34705e33c7333969b3bfd3ba9350
+          image: ghcr.io/krasteki/finpulse-frontend:08ffbde76ff7f03ae95b58695d0ef605c5bef140
           ports:
             - containerPort: 80
           readinessProbe:

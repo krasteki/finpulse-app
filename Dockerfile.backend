@@ -14,7 +14,12 @@ RUN pip install --no-cache-dir \
     httpx==0.28.1 \
     openai==2.32.0 \
     openpyxl==3.1.5 \
-    pandas==3.0.2
+    pandas==3.0.2 \
+    yfinance \
+    requests \
+    beautifulsoup4 \
+    fpdf2 \
+    python-multipart
 
 COPY backend/ ./backend/
 COPY alembic/ ./alembic/

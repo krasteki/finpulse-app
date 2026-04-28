@@ -1,0 +1,28 @@
+---
+# PodDisruptionBudget: гарантира минимум 1 replica по време на node drain / cluster upgrades
+
+# Backend: scale 1→3 (HPA), но при disruption винаги минимум 1 pod
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: finpulse-backend-pdb
+  namespace: finpulse
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: finpulse-backend
+
+---
+# Frontend: 1 replica, при disruption се допуска пълна смяна (minAvailable: 0)
+# но ако искаме high availability: minAvailable: 1 (нужни са поне 2 replicas)
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: finpulse-frontend-pdb
+  namespace: finpulse
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: finpulse-frontend

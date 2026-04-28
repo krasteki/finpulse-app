@@ -1,0 +1,48 @@
+---
+# ResourceQuota: hard limits for the entire finpulse namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: finpulse-quota
+  namespace: finpulse
+spec:
+  hard:
+    # Compute
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    # Objects
+    pods: "20"
+    services: "10"
+    persistentvolumeclaims: "5"
+    secrets: "20"
+    configmaps: "10"
+
+---
+# LimitRange: default requests/limits for pods that don't specify them
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: finpulse-limits
+  namespace: finpulse
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
+      max:
+        cpu: "2"
+        memory: 2Gi
+      min:
+        cpu: 50m
+        memory: 64Mi
+    - type: PersistentVolumeClaim
+      max:
+        storage: 10Gi
+      min:
+        storage: 1Gi

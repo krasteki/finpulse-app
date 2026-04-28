@@ -1,0 +1,146 @@
+# Network Policies for finpulse namespace
+# NOTE: Requires a CNI with NetworkPolicy support (Calico/Cilium).
+# With Flannel, policies are accepted by the API server but not enforced.
+# These document the intended security posture and are ready for CNI migration.
+
+---
+# Default: deny ALL ingress and egress in finpulse namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: finpulse
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+---
+# Allow ingress-nginx → frontend (port 80)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-frontend
+  namespace: finpulse
+spec:
+  podSelector:
+    matchLabels:
+      app: finpulse-frontend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 80
+
+---
+# Allow ingress-nginx → backend (port 8000)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-backend
+  namespace: finpulse
+spec:
+  podSelector:
+    matchLabels:
+      app: finpulse-backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app: finpulse-frontend
+      ports:
+        - protocol: TCP
+          port: 8000
+
+---
+# Allow backend → postgres (port 5432)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-to-postgres
+  namespace: finpulse
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: finpulse-backend
+      ports:
+        - protocol: TCP
+          port: 5432
+
+---
+# Allow backend egress: DNS + postgres + external APIs
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-egress
+  namespace: finpulse
+spec:
+  podSelector:
+    matchLabels:
+      app: finpulse-backend
+  policyTypes:
+    - Egress
+  egress:
+    # DNS resolution (kube-dns)
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # postgres within namespace
+    - to:
+        - podSelector:
+            matchLabels:
+              app: finpulse-postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+    # External APIs (FMP, OpenAI) — allow all external egress on 443
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+      ports:
+        - protocol: TCP
+          port: 443
+
+---
+# Allow Prometheus scraping from monitoring namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-scrape
+  namespace: finpulse
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 8000

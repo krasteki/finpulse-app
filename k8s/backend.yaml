@@ -13,6 +13,7 @@ spec:
       labels:
         app: finpulse-backend
     spec:
+      serviceAccountName: finpulse
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
@@ -36,6 +37,13 @@ spec:
                 secretKeyRef:
                   name: finpulse-backend-secret
                   key: OPENAI_API_KEY
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
           readinessProbe:
             httpGet:
               path: /health

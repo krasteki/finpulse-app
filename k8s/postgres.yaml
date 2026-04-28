@@ -24,6 +24,7 @@ spec:
     metadata:
       labels:
         app: postgres
+        app.kubernetes.io/name: postgres
     spec:
       containers:
         - name: postgres
@@ -46,6 +47,13 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "finpulse_user", "-d", "finpulse"]

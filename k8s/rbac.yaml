@@ -1,0 +1,44 @@
+---
+# Dedicated ServiceAccount for finpulse pods (least privilege)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: finpulse
+  namespace: finpulse
+automountServiceAccountToken: false
+
+---
+# Role: minimal permissions needed by finpulse pods
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: finpulse-app
+  namespace: finpulse
+rules:
+  # Read own secrets (injected by ESO)
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames:
+      - finpulse-db-secret
+      - finpulse-backend-secret
+    verbs: ["get"]
+  # Read configmaps (e.g. app config)
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+
+---
+# RoleBinding: bind finpulse ServiceAccount to the Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: finpulse-app
+  namespace: finpulse
+subjects:
+  - kind: ServiceAccount
+    name: finpulse
+    namespace: finpulse
+roleRef:
+  kind: Role
+  apiGroup: rbac.authorization.k8s.io
+  name: finpulse-app

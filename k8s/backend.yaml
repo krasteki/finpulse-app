@@ -17,7 +17,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: backend
-          image: ghcr.io/krasteki/finpulse-backend:decd8e254bdcb21dea1250453a363be8f6d25e6a
+          image: ghcr.io/krasteki/finpulse-backend:888207bb1872bd9af8fe24525b253b3d02395298
           ports:
             - containerPort: 8000
           env:

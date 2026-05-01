@@ -1,0 +1,76 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: finpulse
+  title: FinPulse
+  description: Personal finance SaaS — portfolio tracker, P&L, real-time market data
+  tags:
+    - fastapi
+    - react
+    - postgresql
+    - python
+    - finance
+  annotations:
+    github.com/project-slug: krasteki/finpulse-app
+    backstage.io/techdocs-ref: dir:.
+    sonarqube.org/project-key: finpulse
+    argocd/app-name: finpulse
+    grafana/dashboard-selector: "app=finpulse"
+  links:
+    - url: https://finpulse.k8s.local
+      title: Live App
+      icon: web
+    - url: https://argocd.k8s.local/applications/finpulse
+      title: ArgoCD
+      icon: dashboard
+    - url: https://sonarqube.k8s.local/dashboard?id=finpulse
+      title: SonarQube
+      icon: dashboard
+    - url: https://grafana.k8s.local
+      title: Grafana
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: krasteki
+  system: platform-engineering
+  dependsOn:
+    - resource:kubernetes-cluster
+  providesApis:
+    - finpulse-api
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: finpulse-api
+  title: FinPulse REST API
+  description: FastAPI backend — portfolio, transactions, market data endpoints
+  tags:
+    - rest
+    - fastapi
+  annotations:
+    github.com/project-slug: krasteki/finpulse-app
+spec:
+  type: openapi
+  lifecycle: production
+  owner: krasteki
+  system: platform-engineering
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: FinPulse API
+      version: 1.0.0
+    paths:
+      /health:
+        get:
+          summary: Health check
+          responses:
+            '200':
+              description: OK
+      /api/portfolio:
+        get:
+          summary: Get portfolio
+          responses:
+            '200':
+              description: Portfolio data

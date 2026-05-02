@@ -21,14 +21,17 @@ metadata:
       title: Live App
       icon: web
     - url: https://argocd.k8s.local/applications/finpulse
-      title: ArgoCD
+      title: ArgoCD (CD)
       icon: dashboard
     - url: https://sonarqube.k8s.local/dashboard?id=finpulse
-      title: SonarQube
+      title: SonarQube (Quality Gate)
       icon: dashboard
     - url: https://grafana.k8s.local
-      title: Grafana
+      title: Grafana (Observability)
       icon: dashboard
+    - url: https://github.com/krasteki/finpulse-app/actions
+      title: GitHub Actions (CI)
+      icon: github
 spec:
   type: service
   lifecycle: production
